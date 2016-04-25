@@ -1,0 +1,15 @@
+@import helper._
+@(testForm: Form[String])(implicit messages: Messages)
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        @helper.form(action = routes.Application.submit) {
+            @inputText(testForm("url"))
+            <input type="submit" value="送信">
+            }
+    </body>
+</html>

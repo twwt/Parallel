@@ -1,0 +1,23 @@
+@import helper._
+@(siteUrl: String, post: Post, postForm: Form[String])(implicit messages: Messages)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-FRAME-OPTIONS" content="SAMEORIGIN" />
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <h2>@siteUrl</h2>
+        <ul>
+            <li>id: @post.userId</li>
+            <li>postMessage: @post.postMessage</li>
+            @helper.form(action = routes.Application.post(siteUrl)) {
+                @inputText(postForm("postMessage"))
+                <input type="hidden" name="url" value="@siteUrl">
+                <input type="submit" value="送信">
+                }
+
+        </ul>
+    </body>
+</html>
