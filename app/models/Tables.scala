@@ -20,11 +20,11 @@ trait Tables {
 
   /** Entity class storing rows of table Post
    *  @param id Database column id SqlType(INT), AutoInc, PrimaryKey
-   *  @param postid Database column postId SqlType(TEXT)
+   *  @param userid Database column userId SqlType(TEXT)
    *  @param postmessage Database column postMessage SqlType(TEXT)
    *  @param siteurl Database column siteUrl SqlType(TEXT)
    *  @param created Database column created SqlType(DATETIME) */
-  case class PostRow(id: Int, postid: String, postmessage: String, siteurl: String, created: java.sql.Timestamp)
+  case class PostRow(id: Int, userid: String, postmessage: String, siteurl: String, created: java.sql.Timestamp)
   /** GetResult implicit for fetching PostRow objects using plain SQL queries */
   implicit def GetResultPostRow(implicit e0: GR[Int], e1: GR[String], e2: GR[java.sql.Timestamp]): GR[PostRow] = GR{
     prs => import prs._
@@ -32,14 +32,14 @@ trait Tables {
   }
   /** Table description of table post. Objects of this class serve as prototypes for rows in queries. */
   class Post(_tableTag: Tag) extends Table[PostRow](_tableTag, "post") {
-    def * = (id, postid, postmessage, siteurl, created) <> (PostRow.tupled, PostRow.unapply)
+    def * = (id, userid, postmessage, siteurl, created) <> (PostRow.tupled, PostRow.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(postid), Rep.Some(postmessage), Rep.Some(siteurl), Rep.Some(created)).shaped.<>({r=>import r._; _1.map(_=> PostRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(userid), Rep.Some(postmessage), Rep.Some(siteurl), Rep.Some(created)).shaped.<>({r=>import r._; _1.map(_=> PostRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(INT), AutoInc, PrimaryKey */
     val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column postId SqlType(TEXT) */
-    val postid: Rep[String] = column[String]("postId")
+    /** Database column userId SqlType(TEXT) */
+    val userid: Rep[String] = column[String]("userId")
     /** Database column postMessage SqlType(TEXT) */
     val postmessage: Rep[String] = column[String]("postMessage")
     /** Database column siteUrl SqlType(TEXT) */

@@ -3,12 +3,12 @@
 # ~~~~
 
 # Home page
-GET         /                    controllers.Application.index
-GET         /submit              controllers.Application.submit
-GET         /input               controllers.Application.input
-POST        /*post               controllers.Application.post(post: String)
-GET         /*url                controllers.Application.show(url: String)
-#GET        /*url                controllers.Application.urlShow(url: String)
+GET         /                    @controllers.Application.index
+GET         /submit              @controllers.Application.submit
+GET         /input               @controllers.Application.input
+POST        /*post               @controllers.Application.post(post: String)
+GET         /*url                @controllers.Application.show(url: String)
+#GET        /*url                @controllers.Application.urlShow(url: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file        @controllers.Assets.versioned(path="/public", file: Asset)

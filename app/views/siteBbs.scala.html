@@ -1,5 +1,6 @@
 @import helper._
-@(siteUrl: String, post: Post, postForm: Form[String])(implicit messages: Messages)
+@import models.Tables.PostRow
+@(siteUrl: String, posts: Seq[PostRow], postForm: Form[String])(implicit messages: Messages)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,14 +11,16 @@
     <body>
         <h2>@siteUrl</h2>
         <ul>
-            <li>id: @post.userId</li>
-            <li>postMessage: @post.postMessage</li>
+            @for(post <- posts) {
+                <li>id: @post.userid</li>
+                <li>postMessage: @post.postmessage</li>
+                <li>postMessage: @post.created</li>
+            }
             @helper.form(action = routes.Application.post(siteUrl)) {
                 @inputText(postForm("postMessage"))
                 <input type="hidden" name="url" value="@siteUrl">
                 <input type="submit" value="送信">
                 }
-
         </ul>
     </body>
 </html>
