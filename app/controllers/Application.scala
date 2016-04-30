@@ -13,14 +13,8 @@ import play.api.i18n.Messages.Implicits._
 
 import scala.collection.immutable.Range
 import scala.util.{Failure, Success, Try}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.matching.Regex
 import org.jsoup.{Connection, Jsoup}
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-
-//case class Post(userId: String, postMessage: String)
 class Application @Inject()(val postDAO: PostDAO) extends Controller {
 
   val displayCount = 5
@@ -67,17 +61,12 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller {
     val siteTitle = postDAO.getSiteTitle(url).getOrElse(fetchTitle(url))
     val postAction: Boolean = postDAO.post(PostRow(0, ip, postMessage, siteId, new Timestamp(System.currentTimeMillis())))
     if (postAction) {
-      val postAll = postDAO.findPostAll(siteId)
-      val latelyPosts = postDAO.getLatelyPosts
-      Ok(views.html.siteBbs(url, siteTitle, siteId, postAll, latelyPosts, postForm))
+      Redirect(s"http://localhost:9000/$url")
     } else {
       BadRequest(views.html.index(url + " : badRequest . def post"))
     }
   }
 
-  /*todo titleがないときにだけ取得したい
-  getSiteTitleするためにはidが必要
-  */
   def show(urlArg: String) = Action {
     val url = addHttp(urlArg)
     postDAO.getSiteTitle(url)
