@@ -1,6 +1,6 @@
 @import helper._
 @import models.Tables.PostRow
-@(siteUrl: String, posts: Seq[PostRow], postForm: Form[String])(implicit messages: Messages)
+@(siteUrl: String, siteTitle: String, siteId: Int, posts: Seq[PostRow], latelyPosts: Seq[LatelyPost], postForm: Form[String])(implicit messages: Messages)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,17 +10,31 @@
     </head>
     <body>
         <h2>@siteUrl</h2>
+        <h2>@siteTitle</h2>
         <ul>
             @for(post <- posts) {
                 <li>id: @post.userid</li>
                 <li>postMessage: @post.postmessage</li>
                 <li>postMessage: @post.created</li>
             }
-            @helper.form(action = routes.Application.post(siteUrl)) {
+            @helper.form(action = routes.Application.messagePost(siteUrl)) {
                 @inputText(postForm("postMessage"))
                 <input type="hidden" name="url" value="@siteUrl">
+                <input type="hidden" name="siteId" value="@siteId">
                 <input type="submit" value="送信">
                 }
+        </ul>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h2></h2>
+        <ul>
+        @for(latelyPost <- latelyPosts) {
+            <a href="localhost:9000/@latelyPost.siteUrl">@latelyPost.siteTitle</a>
+            <li>postMessage: @latelyPost.postmessage</li>
+        }
         </ul>
     </body>
 </html>

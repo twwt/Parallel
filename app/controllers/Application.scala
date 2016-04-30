@@ -3,7 +3,7 @@ package controllers
 import java.sql.Timestamp
 import javax.inject.Inject
 
-import models.Tables.PostRow
+import models.Tables.{PostRow, SiteRow}
 import models.{PostDAO, Tables}
 import play.api.data._
 import play.api.data.Forms._
@@ -17,16 +17,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.matching.Regex
 import org.jsoup.{Connection, Jsoup}
 
-//case class Post(userId: String, postMessage: String)
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
-//@Singleton
+//case class Post(userId: String, postMessage: String)
 class Application @Inject()(val postDAO: PostDAO) extends Controller {
 
+  val displayCount = 5
   val urlForm = Form("url" -> text)
   val postForm = Form("postMessage" -> text)
 
   def index = Action { request =>
-    Ok(views.html.index(request.body.asText.get))
+    Ok(views.html.index("index"))
   }
 
   def input = Action {
@@ -40,38 +42,53 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller {
     }
   }
 
-  def getConnectAutoClose(url: String, dom: String): Option[List[String]] = {
-    val connect: Connection = Jsoup.connect(url).timeout(2000).ignoreHttpErrors(true).followRedirects(true)
-    val statusCode: Option[Int] = Try(connect.execute().statusCode()).toOption
-    statusCode.flatMap {
-      case statusCode if (statusCode >= 200 && statusCode < 300 || statusCode == 304) =>
-        val elems = connect.get.select(dom)
-        val elemSize = elems.size()
-        Some((for (index <- Range(0, elemSize)) yield elems.get(index).text()).toList)
-      case _ => None
+  def fetchTargetHtml(url: String, targetDom: String): Option[List[String]] = {
+    val connect: Option[Connection] = Try(Jsoup.connect(url).timeout(2000).ignoreHttpErrors(true).followRedirects(true)).toOption
+    connect.flatMap { c =>
+      c.execute().statusCode() match {
+        case statusCode if (statusCode >= 200 && statusCode < 300 || statusCode == 304) =>
+          val elems = c.get.select(targetDom)
+          val elemSize = elems.size()
+          Some((for (index <- Range(0, elemSize)) yield elems.get(index).text()).toList)
+        case _ => None
+      }
     }
   }
 
-  def post(url: String) = Action { request =>
+  def fetchTitle(urlArg: String): String = {
+    fetchTargetHtml(urlArg, "title").map(_ (0)).getOrElse(s"$urlArg のタイトルが取得できませんでした。")
+  }
+
+  def messagePost(url: String) = Action { request =>
     val ip: String = request.remoteAddress
     val postMessage: String = request.body.asFormUrlEncoded.get("postMessage").mkString
     val url: String = addHttp(request.body.asFormUrlEncoded.get("url").mkString)
-    postDAO.post(PostRow(0, ip, postMessage, url, new Timestamp(System.currentTimeMillis()))).onComplete {
-      case Success(msg) =>
-        val postAll = postDAO.findAll(url)
-        Ok(views.html.siteBbs(url, postAll, postForm))
-      case Failure(e) => BadRequest(views.html.index(url + " : badRequest . errorCode => " + e))
+    val siteId: Int = request.body.asFormUrlEncoded.get("siteId").mkString.toInt
+    val siteTitle = postDAO.getSiteTitle(url).getOrElse(fetchTitle(url))
+    val postAction: Boolean = postDAO.post(PostRow(0, ip, postMessage, siteId, new Timestamp(System.currentTimeMillis())))
+    if (postAction) {
+      val postAll = postDAO.findPostAll(siteId)
+      val latelyPosts = postDAO.getLatelyPosts
+      Ok(views.html.siteBbs(url, siteTitle, siteId, postAll, latelyPosts, postForm))
+    } else {
+      BadRequest(views.html.index(url + " : badRequest . def post"))
     }
-    val postAll = postDAO.findAll(url)
-    Ok(views.html.siteBbs(url, postAll, postForm))
   }
 
-  def show(urlArg: String) = Action { request =>
+  /*todo titleがないときにだけ取得したい
+  getSiteTitleするためにはidが必要
+  */
+  def show(urlArg: String) = Action {
     val url = addHttp(urlArg)
-    val postAll = postDAO.findAll(url)
-    val title = getConnectAutoClose(url, "title").getOrElse(s"$url のタイトルが取得できませんでした。")
-    println(title)
-    Ok(views.html.siteBbs(url, postAll, postForm))
+    postDAO.getSiteTitle(url)
+    val title: String = postDAO.getSiteTitle(url).getOrElse(fetchTitle(url))
+    val siteId = postDAO.getSiteId(url) match {
+      case Some(siteId) => siteId
+      case None => postDAO.addSite(SiteRow(0, url, title, new Timestamp(System.currentTimeMillis())))
+    }
+    val postAll = postDAO.getPost(siteId, displayCount)
+    val latelyPosts = postDAO.getLatelyPosts
+    Ok(views.html.siteBbs(url, title, siteId, postAll, latelyPosts, postForm))
   }
 
   def urlShow(url: String) = Action { request =>
