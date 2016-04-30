@@ -17,7 +17,7 @@
                 <li>postMessage: @post.comment</li>
                 <li>postMessage: @post.created</li>
             }
-            @helper.form(action = routes.Application.messagePost(siteUrl)) {
+            @helper.form(action = routes.PostController.messagePost(siteUrl)) {
                 @inputText(postForm("postMessage"))
                 <input type="hidden" name="url" value="@siteUrl">
                 <input type="hidden" name="siteId" value="@siteId">
