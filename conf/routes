@@ -6,7 +6,7 @@
 GET         /index/               @controllers.Application.index
 GET         /submit/              @controllers.Application.submit
 GET         /input/               @controllers.Application.input
-#GET         /postAll/*url         @controllers.Application.post(url: String)
+GET         /post/all/*url        @controllers.Application.showAll(url: String)
 POST        /api/post/*url        @controllers.Application.messagePost(url: String)
 #POST        /api/post/*limit        @controllers.Application.getPost(limit: Int)
 GET         /*url                 @controllers.Application.show(url: String)

@@ -2,7 +2,6 @@ package controllers
 
 import java.sql.Timestamp
 import javax.inject.Inject
-
 import models.Tables.{PostRow, SiteRow}
 import models.{PostDAO, Tables}
 import play.api.data._
@@ -10,16 +9,19 @@ import play.api.data.Forms._
 import play.api.mvc._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-
 import scala.collection.immutable.Range
 import scala.util.{Failure, Success, Try}
 import org.jsoup.{Connection, Jsoup}
 
+case class LatelyPost(comment: String, siteUrl: String, siteTitle: String)
+case class Comment(comment: String, created: Timestamp)
+
 class Application @Inject()(val postDAO: PostDAO) extends Controller {
 
-  val displayCount = 5
-  val urlForm = Form("url" -> text)
-  val postForm = Form("postMessage" -> text)
+  private val displayCount = 5
+  private val showAllDisplayCount = 3
+  private val urlForm = Form("url" -> text)
+  private val postForm = Form("postMessage" -> text)
 
   def index = Action { request =>
     Ok(views.html.index("index"))
@@ -67,9 +69,21 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller {
     }
   }
 
+  def showAll(urlArg: String) = Action {
+
+    val url = addHttp(urlArg)
+    val title: Option[String] = postDAO.getSiteTitle(url)
+    val siteId: Option[Int] = postDAO.getSiteId(url)
+    if (List(title, siteId).map(_.isDefined).forall(_ == true)) {
+      val postAll:Seq[Tables.PostRow] = postDAO.getPost(siteId.get, showAllDisplayCount)
+      Ok(views.html.commentList(url, title.get, siteId.get, postAll, postForm))
+    } else {
+      BadRequest(views.html.index(url + " : badRequest . def post"))
+    }
+  }
+
   def show(urlArg: String) = Action {
     val url = addHttp(urlArg)
-    postDAO.getSiteTitle(url)
     val title: String = postDAO.getSiteTitle(url).getOrElse(fetchTitle(url))
     val siteId = postDAO.getSiteId(url) match {
       case Some(siteId) => siteId

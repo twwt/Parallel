@@ -1,8 +1,10 @@
 package models
 
 
+import java.security.Timestamp
 import javax.inject.Inject
 
+import controllers.LatelyPost
 import models.Tables.{Post, PostRow, Site, SiteRow}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
@@ -16,8 +18,6 @@ import scala.util.Try
 /**
   * Created by taishi on 2016/04/26.
   */
-
-case class LatelyPost(postmessage: String, siteUrl: String, siteTitle: String)
 
 class PostDAO @Inject()(val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -55,7 +55,7 @@ class PostDAO @Inject()(val dbConfigProvider: DatabaseConfigProvider) extends Ha
   def getLatelyPosts(): Seq[LatelyPost] = {
     val query = for {
       (p, s) <- postQuery join siteQuery on (_.siteid === _.id)
-    } yield (p.postmessage, s.url, s.sitetitle)
+    } yield (p.comment, s.url, s.sitetitle)
     Await.result(db.run(query.result), Duration.Inf).map(LatelyPost.tupled(_))
   }
 

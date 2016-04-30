@@ -1,0 +1,28 @@
+@import helper._
+@import models.Tables.PostRow
+@(siteUrl: String, siteTitle: String, siteId: Int, commentList: Seq[PostRow], postForm: Form[String])(implicit messages: Messages)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-FRAME-OPTIONS" content="SAMEORIGIN" />
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <h2>@siteUrl</h2>
+        <h2>@siteTitle</h2>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <h2></h2>
+        <ul>
+        @for(comment <- commentList; index <- commentList.zipWithIndex) {
+            <span><strong>@index</strong></span>
+            <li>@comment.comment</li>
+            <li>投稿日時: @comment.created</li>
+        }
+        </ul>
+    </body>
+</html>
