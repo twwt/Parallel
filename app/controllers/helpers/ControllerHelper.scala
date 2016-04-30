@@ -1,7 +1,6 @@
 package controllers.helpers
 
 import org.jsoup.{Connection, Jsoup}
-
 import scala.collection.immutable.Range
 import scala.util.Try
 

@@ -12,10 +12,6 @@ import play.api.mvc._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 
-import scala.collection.immutable.Range
-import scala.util.{Failure, Success, Try}
-import org.jsoup.{Connection, Jsoup}
-
 case class LatelyPost(comment: String, siteUrl: String, siteTitle: String)
 case class Comment(comment: String, created: Timestamp)
 
