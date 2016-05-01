@@ -16,7 +16,6 @@ class PostController @Inject()(val postDAO: PostDAO) extends Controller with Con
     val postMessage: String = request.body.asFormUrlEncoded.get("postMessage").mkString
     val url: String = addHttp(request.body.asFormUrlEncoded.get("url").mkString)
     val siteId: Int = request.body.asFormUrlEncoded.get("siteId").mkString.toInt
-    val siteTitle = postDAO.getSiteTitle(url).getOrElse(fetchTitle(url))
     val postAction: Boolean = postDAO.post(PostRow(0, ip, postMessage, siteId, new Timestamp(System.currentTimeMillis())))
     if (postAction) {
       Redirect(s"http://localhost:9000/$url")
