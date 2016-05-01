@@ -31,8 +31,8 @@ class PostDAO @Inject()(val dbConfigProvider: DatabaseConfigProvider) extends Ha
     Await.result(postAll, Duration.Inf)
   }
 
-  def getPost(siteId: Int, startRange: Int, endRange: Int): Seq[Tables.PostRow] = {
-    val posts = db.run(postQuery.filter(_.siteid === siteId).filter(_.siteid.between(startRange, endRange)).result)
+  def getPost(siteId: Int, startPosition: Int, takePostNum: Int): Seq[Tables.PostRow] = {
+    val posts = db.run(postQuery.filter(_.siteid === siteId).drop(startPosition).take(takePostNum).result)
     Await.result(posts, Duration.Inf)
   }
 

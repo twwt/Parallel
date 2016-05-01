@@ -7,6 +7,7 @@ GET         /index/                      @controllers.Application.index
 GET         /submit/                     @controllers.Application.submit
 GET         /input/                      @controllers.Application.input
 GET         /post/*url/page              @controllers.Application.showAll(url: String,page:Int = 1)
+GET         /post/*url/page/             @controllers.Application.showAll(url: String,page:Int = 1)
 GET         /post/*url/page/:page        @controllers.Application.showAll(url: String,page:Int)
 POST        /api/post/*url               @controllers.PostController.messagePost(url: String)
 #POST        /api/post/*limit        @controllers.Application.getPost(limit: Int)

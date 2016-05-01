@@ -24,7 +24,10 @@
             <li>投稿日時: @comment.created</li>
         }
         </ul>
-        <a href="/post/@siteUrl/page/@page + 1"></a>
+        @if(page != 1) {
+            <a href="/post/@siteUrl/page/@(page - 1)">prev</a>
+        }
+        <a href="/post/@siteUrl/page/@(page + 1)">next</a>
         @helper.form(action = routes.PostController.messagePost(siteUrl)) {
             @inputText(postForm("postMessage"))
             <input type="hidden" name="url" value="@siteUrl">

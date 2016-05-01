@@ -36,7 +36,7 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
     val title: Option[String] = postDAO.getSiteTitle(url)
     val siteId: Option[Int] = postDAO.getSiteId(url)
     if (List(title, siteId).map(_.isDefined).forall(_ == true)) {
-      val postAll: Seq[Tables.PostRow] = postDAO.getPost(siteId.get, ((showAllDisplayCount * page) - showAllDisplayCount), (showAllDisplayCount * page))
+      val postAll: Seq[Tables.PostRow] = postDAO.getPost(siteId.get, ((showAllDisplayCount * page) - showAllDisplayCount), showAllDisplayCount)
       Ok(views.html.commentList(url, title.get, siteId.get, postAll, page, postForm))
     } else {
       BadRequest(views.html.index(url + " : badRequest . def post"))
