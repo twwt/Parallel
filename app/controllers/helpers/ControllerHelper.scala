@@ -23,13 +23,13 @@ trait ControllerHelper {
     val statusCode: Option[Int] = connect.map(_.execute().statusCode())
     statusCode.flatMap { s =>
       if (s >= 200 && s < 300 || s == 304) {
-        (for {
+        for {
           c <- connect
-          elems = c.get.select(targetDom)
-          index <- Range(0, elems.size())
+          elems = Try(c.get.select(targetDom)).toOption
+          list <- Try(Range(0, elems.get.size()).toList).toOption
         } yield {
-          elems.get(index).text()
-        }).toList.some
+          list.flatMap(index => elems.map(_.get(index).text()))
+        }
       } else {
         None
       }
