@@ -22,7 +22,7 @@
             <h2>ページが存在しません。</h2>
             <a href="/post/@siteUrl/page">戻る</a>
         } else {
-            @for((comment, index) <- commentList.zipWithIndex) {
+                @for((comment, index) <- commentList.zipWithIndex) {
                 <span><strong>@index</strong></span>
                 <li>@comment.comment</li>
                 <li>投稿日時: @comment.created</li>

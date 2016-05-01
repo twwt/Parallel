@@ -9,10 +9,12 @@ GET         /input/                      @controllers.Application.input
 GET         /post/*url/page              @controllers.Application.showAll(url: String,page:Int = 1)
 GET         /post/*url/page/             @controllers.Application.showAll(url: String,page:Int = 1)
 GET         /post/*url/page/:page        @controllers.Application.showAll(url: String,page:Int)
-POST        /api/post/*url               @controllers.PostController.messagePost(url: String)
+POST        /post/*url                   @controllers.PostController.messagePost(url: String)
+GET         /api/get                     @controllers.Application.getDiffPost
 #POST        /api/post/*limit        @controllers.Application.getPost(limit: Int)
 GET         /*url                        @controllers.Application.show(url: String)
 #GET        /*url                @controllers.Application.urlShow(url: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                @controllers.Assets.versioned(path="/public", file: Asset)
+GET         /javascripts/*file           controllers.Assets.at(path="/public/javascripts", file)

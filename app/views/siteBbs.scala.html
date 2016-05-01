@@ -6,6 +6,17 @@
     <head>
         <meta http-equiv="X-FRAME-OPTIONS" content="SAMEORIGIN" />
         <meta charset="UTF-8">
+        <script src="@routes.Assets.at("javascripts/jquery-2.2.3.min.js")"></script>
+        <script>
+                $.ajax({
+                    url: "module.html"
+                }).done(function (data) { //ajaxの通信に成功した場合
+                    alert("success!");
+                    $(".example").html(data);
+                }).fail(function (data) { //ajaxの通信に失敗した場合
+                    alert("error!");
+                });
+        </script>
         <title>Title</title>
     </head>
     <body>
