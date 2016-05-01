@@ -18,7 +18,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
   "com.typesafe.slick" %% "slick-codegen" % "3.1.1",
   "org.jsoup" % "jsoup" % "1.7.3",
-  "com.typesafe.play" %% "play-mailer" % "4.0.0"
+  "com.typesafe.play" %% "play-mailer" % "4.0.0",
+  "org.scalaz" %% "scalaz-core" % "7.2.2"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
