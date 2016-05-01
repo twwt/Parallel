@@ -13,12 +13,13 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 
 case class LatelyPost(comment: String, siteUrl: String, siteTitle: String)
+
 case class Comment(comment: String, created: Timestamp)
 
-class Application @Inject()(val postDAO: PostDAO) extends Controller with ControllerHelper{
+class Application @Inject()(val postDAO: PostDAO) extends Controller with ControllerHelper {
 
-  private val displayCount = 5
-  private val showAllDisplayCount = 3
+  private val displayCount = 2
+  private val showAllDisplayCount = 2
   private val urlForm = Form("url" -> text)
   private val postForm = Form("postMessage" -> text)
 
@@ -30,13 +31,13 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
     Ok(views.html.input(urlForm))
   }
 
-  def showAll(urlArg: String) = Action {
+  def showAll(urlArg: String, page: Int) = Action {
     val url = addHttp(urlArg)
     val title: Option[String] = postDAO.getSiteTitle(url)
     val siteId: Option[Int] = postDAO.getSiteId(url)
     if (List(title, siteId).map(_.isDefined).forall(_ == true)) {
-      val postAll:Seq[Tables.PostRow] = postDAO.getPost(siteId.get, showAllDisplayCount)
-      Ok(views.html.commentList(url, title.get, siteId.get, postAll, postForm))
+      val postAll: Seq[Tables.PostRow] = postDAO.getPost(siteId.get, ((showAllDisplayCount * page) - showAllDisplayCount), (showAllDisplayCount * page))
+      Ok(views.html.commentList(url, title.get, siteId.get, postAll, page, postForm))
     } else {
       BadRequest(views.html.index(url + " : badRequest . def post"))
     }
@@ -49,7 +50,8 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
       case Some(siteId) => siteId
       case None => postDAO.addSite(SiteRow(0, url, title, new Timestamp(System.currentTimeMillis())))
     }
-    val postAll = postDAO.getPost(siteId, displayCount)
+    val startRange = 0
+    val postAll = postDAO.getPost(siteId, startRange, displayCount)
     val latelyPosts = postDAO.getLatelyPosts
     Ok(views.html.siteBbs(url, title, siteId, postAll, latelyPosts, postForm))
   }

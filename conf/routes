@@ -3,14 +3,15 @@
 # ~~~~
 
 # Home page
-GET         /index/               @controllers.Application.index
-GET         /submit/              @controllers.Application.submit
-GET         /input/               @controllers.Application.input
-GET         /post/all/*url        @controllers.Application.showAll(url: String)
-POST        /api/post/*url        @controllers.PostController.messagePost(url: String)
+GET         /index/                      @controllers.Application.index
+GET         /submit/                     @controllers.Application.submit
+GET         /input/                      @controllers.Application.input
+GET         /post/*url/page              @controllers.Application.showAll(url: String,page:Int = 1)
+GET         /post/*url/page/:page        @controllers.Application.showAll(url: String,page:Int)
+POST        /api/post/*url               @controllers.PostController.messagePost(url: String)
 #POST        /api/post/*limit        @controllers.Application.getPost(limit: Int)
-GET         /*url                 @controllers.Application.show(url: String)
+GET         /*url                        @controllers.Application.show(url: String)
 #GET        /*url                @controllers.Application.urlShow(url: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file         @controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                @controllers.Assets.versioned(path="/public", file: Asset)
