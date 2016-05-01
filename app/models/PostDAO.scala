@@ -54,7 +54,7 @@ class PostDAO @Inject()(val dbConfigProvider: DatabaseConfigProvider) extends Ha
 
   def getLatelyPosts(): Seq[LatelyPost] = {
     val query = for {
-      (p, s) <- postQuery join siteQuery on (_.siteid === _.id)
+      (p, s) <- postQuery.sortBy(_.created.desc) join siteQuery on (_.siteid === _.id)
     } yield (p.comment, s.url, s.sitetitle)
     Await.result(db.run(query.result), Duration.Inf).map(LatelyPost.tupled(_))
   }

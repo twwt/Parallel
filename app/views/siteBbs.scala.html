@@ -9,7 +9,7 @@
         <title>Title</title>
     </head>
     <body>
-        <h2>@siteUrl</h2>
+        <h2><a href="@siteUrl">@siteUrl</a></h2>
         <h2>@siteTitle</h2>
         <ul>
             @for(post <- posts) {
@@ -32,7 +32,7 @@
         <h2></h2>
         <ul>
         @for(latelyPost <- latelyPosts) {
-            <a href="localhost:9000/@latelyPost.siteUrl">@latelyPost.siteTitle</a>
+            <a href="/@latelyPost.siteUrl">@latelyPost.siteTitle</a>
             <li>postMessage: @latelyPost.comment</li>
         }
         </ul>
