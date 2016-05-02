@@ -6,16 +6,27 @@
     <head>
         <meta http-equiv="X-FRAME-OPTIONS" content="SAMEORIGIN" />
         <meta charset="UTF-8">
-        <script src="@routes.Assets.at("javascripts/jquery-2.2.3.min.js")"></script>
+        @*<script src="@routes.Assets.versioned("javascripts/jquery-2.2.3.min.js")"></script>*@
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
         <script>
-                $.ajax({
-                    url: "module.html"
-                }).done(function (data) { //ajaxの通信に成功した場合
-                    alert("success!");
-                    $(".example").html(data);
-                }).fail(function (data) { //ajaxの通信に失敗した場合
-                    alert("error!");
-                });
+                function ajx() {
+                    var json = JSON.stringify({
+                        "siteId": 1,
+                        "postIds": [1, 2, 3, 4, 5]
+                    });
+                    $.ajax({
+                        url: "http://localhost:9000/api/get",
+                        type: "GET",
+                        contentType: 'application/JSON',
+                        dataType: 'JSON',
+                        scriptCharset: 'utf-8',
+                        data: {"post": json},
+                    }).done(function (data) { //ajaxの通信に成功した場合
+                        console.log(data);
+                    }).fail(function (data) { //ajaxの通信に失敗した場合
+                        console.log(data);
+                    });
+                }
         </script>
         <title>Title</title>
     </head>

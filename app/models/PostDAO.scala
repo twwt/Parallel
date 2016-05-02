@@ -1,20 +1,13 @@
 package models
 
-
-import java.security.Timestamp
 import javax.inject.Inject
-
 import controllers.LatelyPost
 import models.Tables.{Post, PostRow, Site, SiteRow}
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
 import slick.driver.JdbcProfile
-
-import scala.collection.JavaConverters._
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
-import scala.util.Try
-
 /**
   * Created by taishi on 2016/04/26.
   */

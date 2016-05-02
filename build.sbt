@@ -19,10 +19,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick-codegen" % "3.1.1",
   "org.jsoup" % "jsoup" % "1.7.3",
   "com.typesafe.play" %% "play-mailer" % "4.0.0",
-  "org.scalaz" %% "scalaz-core" % "7.2.2",
-  "com.typesafe.akka" %% "akka-http-core" % "2.4.2", // 主に低レベルのサーバーサイドおよびクライアントサイド HTTP/WebSocket API
-  "com.typesafe.akka" %% "akka-http-experimental" % "2.4.2", // 高レベルのサーバーサイド API (experimental)
-  "com.typesafe.akka" %% "akka-http-spray-json-experimental" % "2.4.2"  // Akka で JSON を扱う場合はこれ (experimental)
+  "org.scalaz" %% "scalaz-core" % "7.2.2"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

@@ -5,15 +5,16 @@ import javax.inject.Inject
 
 import controllers.helpers.ControllerHelper
 import models.Tables.{PostRow, SiteRow}
-import models.{PostDAO, PostIdJson, Tables}
+import models.{PostDAO, LatelyPostJson, Tables}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
+import scalaz._
+import Scalaz._
 
-import scala.util.Try
 
 case class LatelyPost(comment: String, siteUrl: String, siteTitle: String)
 
@@ -60,15 +61,17 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
   }
 
   def getDiffPost = Action { implicit request =>
-    val json: Option[Seq[String]] = request.queryString.get("json")
-    val ids: List[Int] = (for {
-      json <- Try(Json.parse(json.mkString("")).validate[List[PostIdJson]].get).toOption
-    } yield for {
-      id <- json.map(_.siteId)
-    } yield {
-      id
-    }).toList.flatten
-    Ok(views.html.index(ids.mkString("")))
+    println(request.queryString.get("post"))
+    val jsonValue: Option[JsValue] = request.queryString.get("post").map(_.mkString("")) match {
+      case Some(json) if json.nonEmpty => Json.parse(json).some
+      case Some(json) if json.isEmpty => None
+      case _ => None
+    }
+    val latelyPostJson: Option[LatelyPostJson] = jsonValue.map(jv => Json.fromJson[LatelyPostJson](jv).getOrElse(LatelyPostJson(0,List(0))))
+    latelyPostJson match {
+      case Some(latelyPostJson) => Ok(views.html.json(latelyPostJson.postIds.mkString("")))
+      case None => Ok(views.html.json("miss"))
+    }
   }
 
   def urlShow(url: String) = Action { request =>
