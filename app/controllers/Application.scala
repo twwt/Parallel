@@ -5,15 +5,18 @@ import javax.inject.Inject
 
 import controllers.helpers.ControllerHelper
 import models.Tables.{PostRow, SiteRow}
-import models.{PostDAO, Tables}
+import models.{PostDAO, PostRowJson, Tables}
+import org.joda.time.DateTime
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.{JsValue, Json}
+
 import scalaz._
 import Scalaz._
+import scala.util.Try
 
 
 case class LatelyPost(comment: String, siteUrl: String, siteTitle: String)
@@ -61,7 +64,18 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
   }
 
   def getDiffPost = Action { implicit request =>
-    val siteId: Option[String] = request.queryString.get("siteId").map(_.mkString(""))
+    val postRowJson: Option[List[Tables.PostRow]] = for {
+      siteId <- request.queryString.get("siteId").map(_.mkString(""))
+      posts <- Try(postDAO.getPost(siteId.toInt, 0, displayCount)).toOption
+    } yield {
+      posts.toList
+    }
+    postRowJson match {
+      case Some(jsonList) =>
+        val postsJson:List[JsValue] = jsonList.map(posts => Json.toJson(PostRowJson(posts.id, posts.userid, posts.comment, posts.siteid, new DateTime(posts.created.getTime))))
+        Ok(views.html.json(postsJson.toString))
+      case None => BadRequest(views.html.json("none"))
+    }
     //    val jsonValue: Option[JsValue] = request.queryString.get("data").map(_.mkString("")) match {
     //      case Some(json) if json.nonEmpty => Json.parse(json).some
     //      case Some(json) if json.isEmpty => None
@@ -72,7 +86,7 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
     //      case Some(latelyPostJson) => Ok(views.html.json(latelyPostJson.postIds.mkString("")))
     //      case None => Ok(views.html.json("miss"))
     //    }
-    Ok(views.html.json("ok"))
+//    Ok(views.html.json(postRowJson.toString))
   }
 
   def urlShow(url: String) = Action { request =>
