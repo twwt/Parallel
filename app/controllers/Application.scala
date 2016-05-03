@@ -13,7 +13,6 @@ import play.api.mvc._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.{JsValue, Json}
-
 import scalaz._
 import Scalaz._
 import scala.util.Try
@@ -72,7 +71,8 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
     }
     postRowJson match {
       case Some(jsonList) =>
-        val postsJson:List[JsValue] = jsonList.map(posts => Json.toJson(PostRowJson(posts.id, posts.userid, posts.comment, posts.siteid, new DateTime(posts.created.getTime))))
+        val postsJson: List[JsValue] = jsonList.map(posts =>
+          Json.toJson(PostRowJson(posts.id, posts.userid, posts.comment, posts.siteid, new DateTime(posts.created.getTime))))
         Ok(views.html.json(postsJson.toString))
       case None => BadRequest(views.html.json("none"))
     }
@@ -86,7 +86,7 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
     //      case Some(latelyPostJson) => Ok(views.html.json(latelyPostJson.postIds.mkString("")))
     //      case None => Ok(views.html.json("miss"))
     //    }
-//    Ok(views.html.json(postRowJson.toString))
+    //    Ok(views.html.json(postRowJson.toString))
   }
 
   def urlShow(url: String) = Action { request =>

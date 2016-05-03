@@ -8,6 +8,9 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
+lazy val slickVersion = "3.1.1"
+lazy val slickJodaMapperVersion = "2.2.0"
+
 libraryDependencies ++= Seq(
 //  jdbc,
   cache,
@@ -19,7 +22,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick-codegen" % "3.1.1",
   "org.jsoup" % "jsoup" % "1.7.3",
   "com.typesafe.play" %% "play-mailer" % "4.0.0",
-  "org.scalaz" %% "scalaz-core" % "7.2.2"
+  "org.scalaz" %% "scalaz-core" % "7.2.2",
+  "com.typesafe.slick" %% "slick" % slickVersion,
+  "com.github.tototoshi" %% "slick-joda-mapper" % slickJodaMapperVersion,
+  "joda-time" % "joda-time" % "2.7",
+  "org.joda" % "joda-convert" % "1.7"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
