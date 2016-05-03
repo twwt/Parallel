@@ -11,11 +11,9 @@ GET         /post/*url/page/             @controllers.Application.showAll(url: S
 GET         /post/*url/page/:page        @controllers.Application.showAll(url: String,page:Int)
 POST        /post/*url                   @controllers.PostController.messagePost(url: String)
 GET         /api/get                     @controllers.Application.getDiffPost
-#POST        /api/post/*limit        @controllers.Application.getPost(limit: Int)
-#GET        /*url                @controllers.Application.urlShow(url: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                @controllers.Assets.versioned(path="/public", file: Asset)
 
-
 GET         /*url                        @controllers.Application.show(url: String)
+

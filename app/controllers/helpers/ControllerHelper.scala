@@ -19,8 +19,8 @@ trait ControllerHelper {
 
 
   def fetchTargetHtml(url: String, targetDom: String): Option[List[String]] = {
-    val connect: Option[Connection] = Try(Jsoup.connect(url).timeout(2000).ignoreHttpErrors(true).followRedirects(true)).toOption
-    println(connect)
+    val ua = """Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36"""
+    val connect: Option[Connection] = Try(Jsoup.connect(url).userAgent(ua).timeout(2000).referrer("http://www.google.com").ignoreContentType(true).ignoreHttpErrors(true).followRedirects(true)).toOption
     val statusCode: Option[Int] = connect match {
       case Some(c) => Try(c.execute().statusCode()).toOption
       case None => None
@@ -41,6 +41,6 @@ trait ControllerHelper {
   }
 
   def fetchTitle(urlArg: String): String = {
-    fetchTargetHtml(urlArg, "title").map(_ (0)).getOrElse(s"$urlArg のタイトルが取得できませんでした。")
+    fetchTargetHtml(urlArg, "title").map(_ (0)).getOrElse(s"$urlArg のタイトルは取得できませんでした。")
   }
 }

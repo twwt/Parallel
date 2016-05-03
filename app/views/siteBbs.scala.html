@@ -9,18 +9,11 @@
         @*<script src="@routes.Assets.versioned("javascripts/jquery-2.2.3.min.js")"></script>*@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
         <script>
-                function ajx() {
-                    var json = JSON.stringify({
-                        "siteId": 1,
-                        "postIds": [1, 2, 3, 4, 5]
-                    });
+                function getPost() {
                     $.ajax({
                         url: "http://localhost:9000/api/get",
-                        type: "GET",
-                        contentType: 'application/JSON',
-                        dataType: 'JSON',
                         scriptCharset: 'utf-8',
-                        data: {"post": json},
+                        data: {siteId:@siteId},
                     }).done(function (data) { //ajaxの通信に成功した場合
                         console.log(data);
                     }).fail(function (data) { //ajaxの通信に失敗した場合

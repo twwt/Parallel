@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 import controllers.helpers.ControllerHelper
 import models.Tables.{PostRow, SiteRow}
-import models.{PostDAO, LatelyPostJson, Tables}
+import models.{PostDAO, Tables}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
@@ -47,8 +47,8 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
     }
   }
 
-  def show(urlArg: String) = Action {
-    val url = addHttp(urlArg)
+  def show(urlArg: String) = Action { implicit request =>
+    val url = addHttp(request.uri.tail)
     val title: String = postDAO.getSiteTitle(url).getOrElse(fetchTitle(url))
     val siteId = postDAO.getSiteId(url) match {
       case Some(siteId) => siteId
@@ -61,17 +61,18 @@ class Application @Inject()(val postDAO: PostDAO) extends Controller with Contro
   }
 
   def getDiffPost = Action { implicit request =>
-    println(request.queryString.get("post"))
-    val jsonValue: Option[JsValue] = request.queryString.get("post").map(_.mkString("")) match {
-      case Some(json) if json.nonEmpty => Json.parse(json).some
-      case Some(json) if json.isEmpty => None
-      case _ => None
-    }
-    val latelyPostJson: Option[LatelyPostJson] = jsonValue.map(jv => Json.fromJson[LatelyPostJson](jv).getOrElse(LatelyPostJson(0,List(0))))
-    latelyPostJson match {
-      case Some(latelyPostJson) => Ok(views.html.json(latelyPostJson.postIds.mkString("")))
-      case None => Ok(views.html.json("miss"))
-    }
+    val siteId: Option[String] = request.queryString.get("siteId").map(_.mkString(""))
+    //    val jsonValue: Option[JsValue] = request.queryString.get("data").map(_.mkString("")) match {
+    //      case Some(json) if json.nonEmpty => Json.parse(json).some
+    //      case Some(json) if json.isEmpty => None
+    //      case _ => None
+    //    }
+    //    val latelyPostJson: Option[LatelyPostJson] = jsonValue.map(jv => Json.fromJson[LatelyPostJson](jv).getOrElse(LatelyPostJson(0,List(0))))
+    //    latelyPostJson match {
+    //      case Some(latelyPostJson) => Ok(views.html.json(latelyPostJson.postIds.mkString("")))
+    //      case None => Ok(views.html.json("miss"))
+    //    }
+    Ok(views.html.json("ok"))
   }
 
   def urlShow(url: String) = Action { request =>
