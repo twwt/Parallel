@@ -1,0 +1,29 @@
+{
+  "name": "parallel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc -p src -w",
+    "start": "live-server --open=src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twwt/Parallel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/twwt/Parallel/issues"
+  },
+  "homepage": "https://github.com/twwt/Parallel#readme",
+  "dependencies": {
+    "angular2": "2.0.0-alpha.44",
+    "systemjs": "0.19.2"
+  }
+}
